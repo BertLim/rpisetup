@@ -1,0 +1,45 @@
+#!/bin/bash
+
+#sudo su
+
+echo "Installing dependencies"
+apt install git libgmp3-dev gawk qpdf bison flex make raspberrypi-kernel-headers
+echo "Sleep 5"
+sleep 5
+
+#Cloning the files
+echo "Cloning Nexmon Git"
+git clone https://github.com/seemoo-lab/nexmon.git
+echo "Cloning done"
+echo "Sleep 5"
+sleep 5
+
+stat  /usr/lib/arm-linux-gnueabihf/libisl.so.10
+#Should return: stat: cannot stat '/usr/lib/arm-linux-gnueabihf/libisl.so.10': No such file or directory
+
+cd /home/pi/nexmon/buildtools/isl-0.10
+./configure
+make
+make install
+ln -s /usr/local/lib/libisl.so /usr/lib/arm-linux-gnueabihf/libisl.so.10
+
+echo "Sleep 5"
+sleep 5
+
+cd /home/pi/nexmon
+source setup_env.sh
+make
+echo "done for now"
+echo "Sleep 5"
+sleep 5
+
+--- Done until here ---
+
+#PI3
+cd /home/pi/nexmon/patches/bcm43430a1/7_45_41_46/nexmon/
+make
+make backup-firmware
+make install-firmware
+cd /home/pi/nexmon/utilities/nexutil
+make
+make install
